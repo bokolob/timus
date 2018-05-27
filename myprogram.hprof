@@ -1,0 +1,240 @@
+JAVA PROFILE 1.0.1, created Fri Nov 17 20:52:30 2017
+
+Copyright (c) 2003, 2005, Oracle and/or its affiliates. All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions
+are met:
+
+  - Redistributions of source code must retain the above copyright
+    notice, this list of conditions and the following disclaimer.
+
+  - Redistributions in binary form must reproduce the above copyright
+    notice, this list of conditions and the following disclaimer in the
+    documentation and/or other materials provided with the distribution.
+
+  - Neither the name of Oracle nor the names of its
+    contributors may be used to endorse or promote products derived
+    from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
+IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+
+Header for -agentlib:hprof (or -Xrunhprof) ASCII Output (JDK 5.0 JVMTI based)
+
+WARNING!  This file format is under development, and is subject to
+change without notice.
+
+This file contains the following types of records:
+
+THREAD START
+THREAD END      mark the lifetime of Java threads
+
+TRACE           represents a Java stack trace.  Each trace consists
+                of a series of stack frames.  Other records refer to
+                TRACEs to identify (1) where object allocations have
+                taken place, (2) the frames in which GC roots were
+                found, and (3) frequently executed methods.
+
+HEAP DUMP       is a complete snapshot of all live objects in the Java
+                heap.  Following distinctions are made:
+
+                ROOT    root set as determined by GC
+                CLS     classes 
+                OBJ     instances
+                ARR     arrays
+
+SITES           is a sorted list of allocation sites.  This identifies
+                the most heavily allocated object types, and the TRACE
+                at which those allocations occurred.
+
+CPU SAMPLES     is a statistical profile of program execution.  The VM
+                periodically samples all running threads, and assigns
+                a quantum to active TRACEs in those threads.  Entries
+                in this record are TRACEs ranked by the percentage of
+                total quanta they consumed; top-ranked TRACEs are
+                typically hot spots in the program.
+
+CPU TIME        is a profile of program execution obtained by measuring
+                the time spent in individual methods (excluding the time
+                spent in callees), as well as by counting the number of
+                times each method is called. Entries in this record are
+                TRACEs ranked by the percentage of total CPU time. The
+                "count" field indicates the number of times each TRACE 
+                is invoked.
+
+MONITOR TIME    is a profile of monitor contention obtained by measuring
+                the time spent by a thread waiting to enter a monitor.
+                Entries in this record are TRACEs ranked by the percentage
+                of total monitor contention time and a brief description
+                of the monitor.  The "count" field indicates the number of 
+                times the monitor was contended at that TRACE.
+
+MONITOR DUMP    is a complete snapshot of all the monitors and threads in 
+                the System.
+
+HEAP DUMP, SITES, CPU SAMPLES|TIME and MONITOR DUMP|TIME records are generated 
+at program exit.  They can also be obtained during program execution by typing 
+Ctrl-\ (on Solaris) or by typing Ctrl-Break (on Win32).
+
+--------
+
+THREAD START (obj=50000193, id = 200001, name="main", group="main")
+THREAD END (id = 200001)
+THREAD START (obj=50000193, id = 200004, name="DestroyJavaVM", group="main")
+THREAD END (id = 200004)
+TRACE 300097:
+	java.io.FileOutputStream.writeBytes(FileOutputStream.java:Unknown line)
+	java.io.FileOutputStream.write(FileOutputStream.java:326)
+	java.io.BufferedOutputStream.flushBuffer(BufferedOutputStream.java:82)
+	java.io.BufferedOutputStream.flush(BufferedOutputStream.java:140)
+TRACE 300077:
+	DistanceInTree.constructGraph(DistanceInTree.java:227)
+	DistanceInTree.readTree(DistanceInTree.java:206)
+	DistanceInTree.main(DistanceInTree.java:243)
+TRACE 300075:
+	DistanceInTree.constructGraph(DistanceInTree.java:234)
+	DistanceInTree.readTree(DistanceInTree.java:206)
+	DistanceInTree.main(DistanceInTree.java:243)
+TRACE 300087:
+	DistanceInTree$Graph.neighbours(DistanceInTree.java:85)
+	DistanceInTree._dfsRecurse(DistanceInTree.java:132)
+	DistanceInTree._dfsRecurse(DistanceInTree.java:142)
+	DistanceInTree._dfsRecurse(DistanceInTree.java:142)
+TRACE 300098:
+	sun.nio.cs.UTF_8$Encoder.encodeLoop(UTF_8.java:691)
+	java.nio.charset.CharsetEncoder.encode(CharsetEncoder.java:579)
+	sun.nio.cs.StreamEncoder.implWrite(StreamEncoder.java:271)
+	sun.nio.cs.StreamEncoder.write(StreamEncoder.java:125)
+TRACE 300080:
+	java.util.HashMap.put(HashMap.java:611)
+	DistanceInTree.addQuery(DistanceInTree.java:282)
+	DistanceInTree.main(DistanceInTree.java:264)
+TRACE 300081:
+	DistanceInTree.main(DistanceInTree.java:266)
+TRACE 300082:
+	DistanceInTree.main(DistanceInTree.java:260)
+TRACE 300083:
+	DistanceInTree.main(DistanceInTree.java:261)
+TRACE 300084:
+	DistanceInTree.main(DistanceInTree.java:266)
+TRACE 300045:
+	java.util.zip.Inflater.init(Inflater.java:Unknown line)
+	java.util.zip.Inflater.<init>(Inflater.java:103)
+	java.util.zip.ZipFile.getInflater(ZipFile.java:469)
+	java.util.zip.ZipFile.getInputStream(ZipFile.java:388)
+TRACE 300069:
+	java.lang.CharacterDataLatin1.digit(CharacterDataLatin1.java:169)
+	java.lang.Character.digit(Character.java:6563)
+	java.lang.Character.digit(Character.java:6511)
+	java.lang.Integer.parseInt(Integer.java:578)
+TRACE 300070:
+	java.util.ArrayList.grow(ArrayList.java:254)
+	java.util.ArrayList.ensureExplicitCapacity(ArrayList.java:235)
+	java.util.ArrayList.ensureCapacityInternal(ArrayList.java:227)
+	java.util.ArrayList.add(ArrayList.java:458)
+TRACE 300071:
+	DistanceInTree.constructGraph(DistanceInTree.java:227)
+	DistanceInTree.readTree(DistanceInTree.java:206)
+	DistanceInTree.main(DistanceInTree.java:243)
+TRACE 300090:
+	DistanceInTree._dfsRecurse(DistanceInTree.java:132)
+	DistanceInTree._dfsRecurse(DistanceInTree.java:142)
+	DistanceInTree._dfsRecurse(DistanceInTree.java:142)
+	DistanceInTree._dfsRecurse(DistanceInTree.java:142)
+TRACE 300091:
+	DistanceInTree.processPostOrder(DistanceInTree.java:152)
+	DistanceInTree._dfsRecurse(DistanceInTree.java:145)
+	DistanceInTree._dfsRecurse(DistanceInTree.java:142)
+	DistanceInTree._dfsRecurse(DistanceInTree.java:142)
+TRACE 300092:
+	DistanceInTree.processPostOrder(DistanceInTree.java:151)
+	DistanceInTree._dfsRecurse(DistanceInTree.java:145)
+	DistanceInTree._dfsRecurse(DistanceInTree.java:142)
+	DistanceInTree._dfsRecurse(DistanceInTree.java:142)
+TRACE 300093:
+	DistanceInTree.processPostOrder(DistanceInTree.java:152)
+	DistanceInTree._dfsRecurse(DistanceInTree.java:145)
+	DistanceInTree._dfsRecurse(DistanceInTree.java:142)
+	DistanceInTree._dfsRecurse(DistanceInTree.java:142)
+TRACE 300094:
+	java.lang.Integer.valueOf(Integer.java:832)
+	DistanceInTree$DSU.findSet(DistanceInTree.java:25)
+	DistanceInTree$DSU.getMark(DistanceInTree.java:39)
+	DistanceInTree.processPostOrder(DistanceInTree.java:157)
+TRACE 300095:
+	sun.nio.cs.UTF_8$Encoder.encodeArrayLoop(UTF_8.java:590)
+	sun.nio.cs.UTF_8$Encoder.encodeLoop(UTF_8.java:691)
+	java.nio.charset.CharsetEncoder.encode(CharsetEncoder.java:579)
+	sun.nio.cs.StreamEncoder.implWrite(StreamEncoder.java:271)
+TRACE 300096:
+	java.lang.System.arraycopy(System.java:Unknown line)
+	java.io.BufferedOutputStream.write(BufferedOutputStream.java:128)
+	java.io.PrintStream.write(PrintStream.java:480)
+	sun.nio.cs.StreamEncoder.writeBytes(StreamEncoder.java:221)
+TRACE 300073:
+	DistanceInTree.constructGraph(DistanceInTree.java:235)
+	DistanceInTree.readTree(DistanceInTree.java:206)
+	DistanceInTree.main(DistanceInTree.java:243)
+TRACE 300072:
+	DistanceInTree.constructGraph(DistanceInTree.java:225)
+	DistanceInTree.readTree(DistanceInTree.java:206)
+	DistanceInTree.main(DistanceInTree.java:243)
+TRACE 300074:
+	sun.nio.cs.UTF_8$Decoder.decodeArrayLoop(UTF_8.java:234)
+	sun.nio.cs.UTF_8$Decoder.decodeLoop(UTF_8.java:412)
+	java.nio.charset.CharsetDecoder.decode(CharsetDecoder.java:579)
+	sun.nio.cs.StreamDecoder.implRead(StreamDecoder.java:318)
+TRACE 300076:
+	java.util.HashMap.putVal(HashMap.java:662)
+	java.util.HashMap.put(HashMap.java:611)
+	DistanceInTree$DSU.makeSet(DistanceInTree.java:66)
+	DistanceInTree.constructGraph(DistanceInTree.java:232)
+TRACE 300078:
+	java.util.HashMap.putVal(HashMap.java:662)
+	java.util.HashMap.put(HashMap.java:611)
+	DistanceInTree$Graph.addEdge(DistanceInTree.java:109)
+	DistanceInTree.constructGraph(DistanceInTree.java:234)
+TRACE 300079:
+	DistanceInTree.addQuery(DistanceInTree.java:282)
+	DistanceInTree.main(DistanceInTree.java:264)
+CPU SAMPLES BEGIN (total = 55) Fri Nov 17 20:52:31 2017
+rank   self  accum   count trace method
+   1 43,64% 43,64%      24 300097 java.io.FileOutputStream.writeBytes
+   2  5,45% 49,09%       3 300077 DistanceInTree.constructGraph
+   3  3,64% 52,73%       2 300075 DistanceInTree.constructGraph
+   4  3,64% 56,36%       2 300087 DistanceInTree$Graph.neighbours
+   5  3,64% 60,00%       2 300098 sun.nio.cs.UTF_8$Encoder.encodeLoop
+   6  1,82% 61,82%       1 300080 java.util.HashMap.put
+   7  1,82% 63,64%       1 300081 DistanceInTree.main
+   8  1,82% 65,45%       1 300082 DistanceInTree.main
+   9  1,82% 67,27%       1 300083 DistanceInTree.main
+  10  1,82% 69,09%       1 300084 DistanceInTree.main
+  11  1,82% 70,91%       1 300045 java.util.zip.Inflater.init
+  12  1,82% 72,73%       1 300069 java.lang.CharacterDataLatin1.digit
+  13  1,82% 74,55%       1 300070 java.util.ArrayList.grow
+  14  1,82% 76,36%       1 300071 DistanceInTree.constructGraph
+  15  1,82% 78,18%       1 300090 DistanceInTree._dfsRecurse
+  16  1,82% 80,00%       1 300091 DistanceInTree.processPostOrder
+  17  1,82% 81,82%       1 300092 DistanceInTree.processPostOrder
+  18  1,82% 83,64%       1 300093 DistanceInTree.processPostOrder
+  19  1,82% 85,45%       1 300094 java.lang.Integer.valueOf
+  20  1,82% 87,27%       1 300095 sun.nio.cs.UTF_8$Encoder.encodeArrayLoop
+  21  1,82% 89,09%       1 300096 java.lang.System.arraycopy
+  22  1,82% 90,91%       1 300073 DistanceInTree.constructGraph
+  23  1,82% 92,73%       1 300072 DistanceInTree.constructGraph
+  24  1,82% 94,55%       1 300074 sun.nio.cs.UTF_8$Decoder.decodeArrayLoop
+  25  1,82% 96,36%       1 300076 java.util.HashMap.putVal
+  26  1,82% 98,18%       1 300078 java.util.HashMap.putVal
+  27  1,82% 100,00%       1 300079 DistanceInTree.addQuery
+CPU SAMPLES END
