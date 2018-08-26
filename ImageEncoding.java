@@ -22,7 +22,6 @@ public class ImageEncoding
         else {
             firstType(in, Integer.parseInt(s));
         }
-
     }
     
     public static void secondType( Scanner in, int x, int y) {
