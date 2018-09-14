@@ -27,16 +27,14 @@ public class Erudite
 
     public static boolean check(char[][] table, String s) {
         char pattern[] = s.toCharArray();
+        boolean[] visited = new boolean[16];
         
         for (int i = 0; i < 4 ; i++) {
             for (int j = 0; j < 4; j++) {
-                if (table[i][j] == pattern[0]) {
-                    boolean[] visited = new boolean[16];
-                    warn("Start from "+ (i*4+j));
-                    if (dfsSearch(table, i*4+j, pattern, 0, visited)) {
-                        System.out.println(s+": YES");
-                        return true;
-                    }
+                warn("Start from "+ i+ " "+j);
+                if (dfsSearch(table, i, j, pattern, 0, visited)) {
+                    System.out.println(s+": YES");
+                    return true;
                 }
             }
         }
@@ -45,45 +43,38 @@ public class Erudite
         return false;
     }
     
-    public static boolean dfsSearch(char[][] table, int p, char[] pattern, int patternPos, boolean[] visited) {
-        if (patternPos > pattern.length-1)
+    public static boolean dfsSearch(char[][] table, int x, int y, char[] pattern, int patternPos, boolean[] visited) {
+        if (x < 0 || x > 3 || y < 0 || y > 3)
             return false;
 
-        if (patternPos == pattern.length-1)
+        int p = y * 4 + x;
+
+        if (visited[p])
+            return false;
+
+        if (table[y][x] != pattern[patternPos]) {
+            return false;
+        }
+        
+        if (patternPos == pattern.length-1) {
+            warn("FOUND! "+" "+x+" "+y+" "+patternPos);
             return true;
+        }
+        
+        warn("TRY! "+" "+x+" "+y+" "+patternPos+" "+table[y][x]);
 
         visited[p]=true;
-
-        if (p-4>=0 && !visited[p-4] && table[(p-4)/4][(p-4)%4] == pattern[patternPos]) {
-            warn("1 "+p);
-            if (dfsSearch(table,p-4, pattern, patternPos+1, visited)) {
-                return true;
-            }
-        }
-        if ( p+4 < 16  && !visited[p+4] && table[(p+4)/4][(p+4)%4] == pattern[patternPos]) {
-            warn("2 "+p);
-            if (dfsSearch(table,p+4, pattern, patternPos+1, visited)) {
-                return true;
-            }
-        }
-        if (p-1>=0 && !visited[p-1] && table[(p-1)/4][(p-1)%4] == pattern[patternPos]) {
-            warn("3 "+p);
-            if (dfsSearch(table,p-1, pattern, patternPos+1, visited)) {
-                return true;
-            }
-        }
-        if (p+1 < 16 && !visited[p+1] && table[(p+1)/4][(p+1)%4] == pattern[patternPos]) {
-            warn("4 "+p);
-            if (dfsSearch(table,p+1, pattern, patternPos+1, visited)) {
-                return true;
-            }
-        }
+        
+        boolean result = dfsSearch(table, x, y - 1, pattern, patternPos+1, visited)
+                         || dfsSearch(table, x, y + 1, pattern, patternPos+1, visited)
+                         || dfsSearch(table, x + 1, y, pattern, patternPos+1, visited)
+                         || dfsSearch(table, x-1, y, pattern, patternPos+1,visited); 
 
         visited[p]=false;
-        return false;
+        return result;
     }
 
-    public static final boolean DEBUG = true;
+    public static final boolean DEBUG = false;
     public static void warn(String s) {
         if (DEBUG) {
             System.out.println(s);
