@@ -7,8 +7,9 @@ public class DevilSequence
         Scanner in = new Scanner(System.in).useLocale(Locale.US);
         PrintWriter out = new PrintWriter(System.out);
         
-        int n = in.nextInt();
-        int len = (int)((Math.log(2) * (double)n) / Math.log(10));
+        double n = in.nextInt();
+
+        int len = (int)((Math.log(2)*(n-1))/Math.log(10.0) + Math.log(3.0)/Math.log(10.0));
         warn (len+"");
     }
 
